@@ -1,14 +1,12 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
  
-const heroeSchema = new Schema({
+const marcaSchema = new Schema({
   name: String,
-  imagen: String,
-  comic: String,
   createdAt: {
     type: Date,
     default: Date.now,
   },
 });
  
-module.exports = mongoose.model("Heroe", heroeSchema);
+module.exports = mongoose.model("Marca", marcaSchema);

@@ -1,7 +1,9 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require('cors');
-const heroeRouter = require("./routes/HeroeRoutes");
+const marcaRouter = require("./routes/MarcaRoutes");
+const categoriaRouter = require("./routes/CategoriaRoutes");
+const medicinaRouter = require("./routes/MedicinaRoutes");
 require('dotenv').config();
 
 const app = express();
@@ -11,7 +13,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 //routes
-app.use("/api/heroes", heroeRouter);
+app.use("/api/dermocosmetica/marcas", marcaRouter);
+app.use("/api/dermocosmetica/categorias", categoriaRouter);
+app.use("/api/dermocosmetica/medicinas", medicinaRouter);
 //conexion a la base de datos
 mongoose.connect(
     process.env.MONGODB_URI || "mongodb://localhost/CRUD",
