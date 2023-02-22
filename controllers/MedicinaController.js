@@ -1,4 +1,5 @@
 const medicinaService = require("../services/MedicinaService");
+const categoriaService = require("../services/CategoriaService");
  
 exports.getAllMedicinas = async (req, res) => {
   try {
@@ -12,7 +13,21 @@ exports.getAllMedicinas = async (req, res) => {
 exports.createMedicina = async (req, res) => {
   try {
     console.log(req.body);
-    const medicina = await medicinaService.createMedicina(req.body);
+    const categoryNames = req.body.categoriaNames;
+    console.log('nombres de categoria en request body: ', categoryNames);
+    
+    const categoriaIds = await categoriaService.getCategoriaNamesByIds(categoryNames);
+    console.log('categorias encontradas: ', categoriaIds);
+    
+    const data = {
+      name: req.body.name,
+      marcaId: req.body.marcaId,
+      categoriaIds,
+      componente: req.body.componente,
+      imagenUrl: req.body.imagenUrl,
+    };
+    
+    const medicina = await medicinaService.createMedicina(data);
     res.json({ data: medicina, status: "success" });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -30,7 +45,22 @@ exports.getMedicinaById = async (req, res) => {
  
 exports.updateMedicina = async (req, res) => {
   try {
-    const medicina = await medicinaService.updateMedicina(req.params.id, req.body);
+    console.log(req.body);
+    const categoryNames = req.body.categoriaNames;
+    console.log('nombres de categoria en request body: ', categoryNames);
+    
+    const categoriaIds = await categoriaService.getCategoriaNamesByIds(categoryNames);
+    console.log('categorias encontradas: ', categoriaIds);
+    
+    const data = {
+      name: req.body.name,
+      marcaId: req.body.marcaId,
+      categoriaIds,
+      componente: req.body.componente,
+      imagenUrl: req.body.imagenUrl,
+    };
+    
+    const medicina = await medicinaService.updateMedicina(req.params.id, data);
     res.json({ data: medicina, status: "success" });
   } catch (err) {
     res.status(500).json({ error: err.message });
