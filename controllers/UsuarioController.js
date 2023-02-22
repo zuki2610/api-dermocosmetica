@@ -7,7 +7,7 @@ require('dotenv').config();
 exports.registrarUsuario = async (req, res) => {
   try {
     // Obtenemos los datos del usuario desde el request body que enviamos desde postman
-    const { email, password } = req.body;
+    const { email, password, name } = req.body;
 
     // Revisamos si el email ya esta en uso
     const existingUser = await obtenerUsuarioPorEmail(email);
@@ -20,7 +20,7 @@ exports.registrarUsuario = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, salt);
 
     // Creamos un nuevo usuario
-    const user = await guardarUsuario({ email, password: hashedPassword });
+    const user = await guardarUsuario({ email, password: hashedPassword, name });
 
     // retornamos el usuario creado
     return res.status(201).json({ message: 'Usuario registrado exitosamente', user });
@@ -39,17 +39,20 @@ exports.iniciarSesion = async (req, res) => {
     // Buscamos la informacion del usuario por el email y verificamos si existe
     const user = await obtenerUsuarioPorEmail(email);
     if (!user) {
-      return res.status(401).json({ message: 'Correo electrónico o contraseña incorrectos' });
+      return res.status(401).json({ message: 'Usuario no existe' });
     }
-
+    console.log('contraseña', password);
+    console.log('user info', user);
     // Revisamos si la contraseña ingresada coincide con la contraseña cifrada del usuario
     const passwordMatches = await bcrypt.compare(password, user.password);
+    console.log(passwordMatches);
+    
     if (!passwordMatches) {
       return res.status(401).json({ message: 'Correo electrónico o contraseña incorrectos' });
     }
 
     // Creamos un token JWT que contiene el id del usuario
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '2592000' });
 
     // Devolvemos el token como respuesta
     return res.status(200).json({ token });

@@ -54,7 +54,6 @@ exports.obtenerUsuarioPorEmail = async (email) => {
   try {
     // Buscamos el usuario en la base de datos por su correo electrónico
     const usuarioEncontrado = await Usuario.findOne({ email });
-
     // Si encontramos un usuario con el correo electrónico especificado, lo devolvemos
     return usuarioEncontrado;
   } catch (error) {

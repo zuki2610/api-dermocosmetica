@@ -5,7 +5,7 @@ const usuarioController = require('../controllers/UsuarioController');
 const router = express.Router();
 
 // Definimos las rutas y los controladores correspondientes
-router.post('/regisrar', usuarioController.registrarUsuario);
+router.post('/crear-cuenta', usuarioController.registrarUsuario);
 router.post('/iniciar-sesion', usuarioController.iniciarSesion);
 
 module.exports = router;
