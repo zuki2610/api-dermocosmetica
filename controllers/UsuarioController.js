@@ -1,34 +1,60 @@
-const usuarioService = require('../services/UsuarioService');
+const { guardarUsuario, obtenerUsuarioPorEmail } = require('../services/UsuarioService');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+require('dotenv').config();
 
-// Controlador para crear un nuevo usuario
-exports.crearUsuario = async(req, res) => {
+// Funcion para manejar el registro de usuarios
+exports.registrarUsuario = async (req, res) => {
   try {
-    // Llamamos a la función "guardarUsuario" del servicio "UsuarioService" para guardar el nuevo usuario
-    const usuarioGuardado = await usuarioService.guardarUsuario(req.body);
+    // Obtenemos los datos del usuario desde el request body que enviamos desde postman
+    const { email, password } = req.body;
 
-    // Enviamos la respuesta con el usuario guardado en la base de datos
-    res.status(201).json(usuarioGuardado);
-  } catch (error) {
-    // Si hay algún error, enviamos una respuesta con el código de error correspondiente y un mensaje de error
-    res.status(400).json({ error: error.message });
-  }
-}
-
-// Controlador para obtener un usuario por email
-exports.obtenerUsuarioPorEmail =  async(req, res) => {
-  try {
-    // Llamamos a la función "obtenerUsuarioPorEmail" del servicio "UsuarioService" para obtener el usuario
-    const usuarioEncontrado = await usuarioService.obtenerUsuarioPorEmail(req.params.email);
-
-    // Si el usuario existe, enviamos la respuesta con el usuario
-    if (usuarioEncontrado) {
-      res.json(usuarioEncontrado);
-    } else {
-      // Si el usuario no existe, enviamos una respuesta con el código de error correspondiente y un mensaje de error
-      res.status(404).json({ error: 'Usuario no encontrado' });
+    // Revisamos si el email ya esta en uso
+    const existingUser = await obtenerUsuarioPorEmail(email);
+    if (existingUser) {
+      return res.status(400).json({ message: 'El correo electrónico ya está en uso' });
     }
+
+    // Ciframos la contraseña
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    // Creamos un nuevo usuario
+    const user = await guardarUsuario({ email, password: hashedPassword });
+
+    // retornamos el usuario creado
+    return res.status(201).json({ message: 'Usuario registrado exitosamente', user });
   } catch (error) {
-    // Si hay algún error, enviamos una respuesta con el código de error correspondiente y un mensaje de error
-    res.status(400).json({ error: error.message });
+    // Return an error message if something went wrong
+    return res.status(500).json({ message: `Error al registrar el usuario: ${error.message}` });
   }
-}
+};
+
+// Función para iniciar sesión
+exports.iniciarSesion = async (req, res) => {
+  try {
+    // Obtenemos los datos del usuario desde el request body que enviamos desde postman
+    const { email, password } = req.body;
+
+    // Buscamos la informacion del usuario por el email y verificamos si existe
+    const user = await obtenerUsuarioPorEmail(email);
+    if (!user) {
+      return res.status(401).json({ message: 'Correo electrónico o contraseña incorrectos' });
+    }
+
+    // Revisamos si la contraseña ingresada coincide con la contraseña cifrada del usuario
+    const passwordMatches = await bcrypt.compare(password, user.password);
+    if (!passwordMatches) {
+      return res.status(401).json({ message: 'Correo electrónico o contraseña incorrectos' });
+    }
+
+    // Creamos un token JWT que contiene el id del usuario
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+    // Devolvemos el token como respuesta
+    return res.status(200).json({ token });
+  } catch (error) {
+    // Devolvemos un error si ocurrio algo inesperado
+    return res.status(500).json({ message: `Error al iniciar sesión: ${error.message}` });
+  }
+};
