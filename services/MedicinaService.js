@@ -1,5 +1,6 @@
-const MedicinaModel = require("../models/medicina");
+const MedicinaModel = require("../models/Medicina");
 const CategoriaService = require("./CategoriaService");
+
 exports.getAllMedicinas = async () => {
   return await MedicinaModel.find();
 };
