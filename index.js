@@ -5,6 +5,7 @@ const marcaRouter = require('./routes/MarcaRoutes')
 const categoriaRouter = require("./routes/CategoriaRoutes");
 const medicinaRouter = require("./routes/MedicinaRoutes");
 const usuarioRoutes = require('./routes/UsuarioRoutes');
+const pacienteRoutes = require('./routes/PacienteRoutes');
 const { requireAuth } = require("./middleware/AuthMiddleware");
 
 require('dotenv').config();
@@ -19,7 +20,9 @@ app.use(cors());
 app.use("/api/dermocosmetica/marcas", requireAuth, marcaRouter);
 app.use("/api/dermocosmetica/categorias", requireAuth, categoriaRouter);
 app.use("/api/dermocosmetica/medicinas", requireAuth, medicinaRouter);
+app.use('/api/dermocosmetica/pacientes', requireAuth, pacienteRoutes);
 app.use('/api/dermocosmetica/usuarios', usuarioRoutes);
+
 //conexion a la base de datos
 mongoose.connect(
     process.env.MONGODB_URI || "mongodb://localhost/CRUD",
