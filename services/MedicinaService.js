@@ -20,3 +20,7 @@ exports.updateMedicina = async (id, medicina) => {
 exports.deleteMedicina = async (id) => {
   return await MedicinaModel.findByIdAndDelete(id);
 };
+
+exports.getMedicinasByCategoriaIds = async (categoriaIds) => {
+  return await MedicinaModel.find({ categoriaIds: { $in: categoriaIds } });
+};

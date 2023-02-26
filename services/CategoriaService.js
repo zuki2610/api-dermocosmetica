@@ -13,7 +13,7 @@ exports.getCategoriaById = async (id) => {
 
 exports.getCategoriaNamesByIds = async (categoriaNames) => {
   console.log('categorias', categoriaNames);
-  return await CategoriaModel.find( { name: { $in: JSON.parse(categoriaNames) } } ).distinct("_id").exec();
+  return await CategoriaModel.find( { name: { $in: categoriaNames } } ).distinct("_id").exec();
 };
 
 exports.updateCategoria = async (id, categoria) => {
