@@ -14,17 +14,25 @@ exports.createMedicina = async (req, res) => {
   try {
     console.log(req.body);
     const categoryNames = req.body.categoriaNames;
-    console.log('nombres de categoria en request body: ', categoryNames);
+    console.log('nombres de categoria en request body: ', categoryNames, 'tipo de dato ', typeof categoryNames);
     
     const categoriaIds = await categoriaService.getCategoriaNamesByIds(categoryNames);
     console.log('categorias encontradas: ', categoriaIds);
+
+    const file = req.file;
+    const imagePath = `uploads/${req.file.filename}`;
+
+    // Construir la URL del archivo
+    const imagenUrl = `${req.protocol}://${req.get('host')}/api/dermocosmetica/${imagePath}`;
+
+    // console.log(file);
     
     const data = {
       name: req.body.name,
       marcaId: req.body.marcaId,
       categoriaIds,
       componente: req.body.componente,
-      imagenUrl: req.body.imagenUrl,
+      imagenUrl,
     };
     
     const medicina = await medicinaService.createMedicina(data);
