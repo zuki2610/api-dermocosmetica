@@ -22,6 +22,8 @@ app.use("/api/dermocosmetica/categorias", requireAuth, categoriaRouter);
 app.use("/api/dermocosmetica/medicinas", requireAuth, medicinaRouter);
 app.use('/api/dermocosmetica/pacientes', requireAuth, pacienteRoutes);
 app.use('/api/dermocosmetica/usuarios', usuarioRoutes);
+// Agregar esta línea para servir los archivos estáticos de la carpeta uploads
+app.use('/api/dermocosmetica/uploads', express.static('uploads'));
 
 //conexion a la base de datos
 mongoose.connect(
