@@ -1,5 +1,6 @@
 const medicinaService = require("../services/MedicinaService");
 const categoriaService = require("../services/CategoriaService");
+const marcaService = require("../services/MarcaService");
  
 exports.getAllMedicinas = async (req, res) => {
   try {
@@ -14,12 +15,14 @@ exports.createMedicina = async (req, res) => {
   try {
     console.log(req.body);
     const categoryNames = req.body.categoriaNames.split(',');
+
     console.log(categoryNames);
     
     const categoriaIds = await categoriaService.getCategoriaNamesByIds(categoryNames);
-
+    const marcaId = await marcaService.getMarcaByName(req.body.marca);
+    console.log(marcaId);
     const file = req.file;
-    const imagePath = `uploads/${req.file.filename}`;
+    const imagePath = `uploads/${file.filename}`;
 
     // Construir la URL del archivo
     const imagenUrl = `${req.protocol}://${req.get('host')}/api/dermocosmetica/${imagePath}`;
@@ -28,7 +31,7 @@ exports.createMedicina = async (req, res) => {
     
     const data = {
       name: req.body.name,
-      marcaId: req.body.marcaId,
+      marcaId,
       categoriaIds,
       componente: req.body.componente,
       imagenUrl,
@@ -87,13 +90,22 @@ exports.deleteMedicina = async (req, res) => {
 
 exports.getMedicinasByCategorias = async (req, res) => {
   try {
-    const data = req.query.nombresCategorias.split(',');
-    console.log('nombres de categorias: ', data);
-    const categoriaIds = await categoriaService.getCategoriaNamesByIds(data);
-    console.log('categorias encontradas: ', categoriaIds);
+    const categoriaIds = req.query.ids.split(',');
+    console.log('ids de categorias: ', categoriaIds);
     const medicinas = await medicinaService.getMedicinasByCategoriaIds(categoriaIds);
     res.json({ data: medicinas, status: "success" });
   } catch (err) {
     res.status(500).json({ error: err.message, method: 'getMedicinasByCategorias' });
   }
 };
+
+exports.getMedicinasByMarcas = async (req, res) => {
+  try {
+    const marcaIds = req.query.ids.split(',');
+    console.log('ids de marcas: ', marcaIds);
+    const medicinas = await medicinaService.getMedicinasByMarcaIds(marcaIds);
+    res.json({ data: medicinas, status: "success" });
+  } catch (err) {
+    res.status(500).json({ error: err.message, method: 'getMedicinasByMarcas' });
+  }
+}

@@ -22,5 +22,9 @@ exports.deleteMedicina = async (id) => {
 };
 
 exports.getMedicinasByCategoriaIds = async (categoriaIds) => {
-  return await MedicinaModel.find({ categoriaIds: { $in: categoriaIds } });
+  return await MedicinaModel.find({ categoriaIds: { $in: categoriaIds } }).populate('marcaId', 'name');;
+};
+
+exports.getMedicinasByMarcaIds = async (marcaIds) => {
+  return await MedicinaModel.find({ marcaId: { $in: marcaIds } }).populate('marcaId', 'name');
 };

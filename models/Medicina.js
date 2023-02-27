@@ -3,8 +3,8 @@ const Schema = mongoose.Schema;
  
 const medicinaSchema = new Schema({
   name: String,
-  categoriaIds: [{ type: Schema.Types.ObjectId, ref: "categoria" }],
-  marcaId: String,
+  categoriaIds: [{ type: Schema.Types.ObjectId, ref: "Categoria" }],
+  marcaId: { type: Schema.Types.ObjectId, ref: "Marca" },
   imagenUrl: String, 
   componente: [{ type: String}],
   createdAt: {

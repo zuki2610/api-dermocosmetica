@@ -19,3 +19,7 @@ exports.updateMarca = async (id, marca) => {
 exports.deleteMarca = async (id) => {
   return await MarcaModel.findByIdAndDelete(id);
 };
+
+exports.getMarcaByName = async (name) => {
+  return await MarcaModel.findOne({ name });
+};

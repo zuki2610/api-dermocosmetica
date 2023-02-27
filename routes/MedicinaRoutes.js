@@ -6,7 +6,8 @@ const {
   getMedicinaById,
   updateMedicina,
   deleteMedicina,
-  getMedicinasByCategorias
+  getMedicinasByCategorias,
+  getMedicinasByMarcas
 } = require("../controllers/MedicinaController");
  
 const router = express.Router();
@@ -28,5 +29,6 @@ router.route("/id/:id").get(getMedicinaById);
 router.route("/:id").put(updateMedicina);
 router.route("/:id").delete(deleteMedicina);
 router.route("/categorias").get(getMedicinasByCategorias);
+router.route("/marcas").get(getMedicinasByMarcas);
  
 module.exports = router;
