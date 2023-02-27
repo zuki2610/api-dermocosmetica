@@ -52,7 +52,7 @@ exports.iniciarSesion = async (req, res) => {
     }
 
     // Creamos un token JWT que contiene el id del usuario
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '2592000' });
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '2 years' });
 
     // Devolvemos el token como respuesta
     return res.status(200).json({ token });

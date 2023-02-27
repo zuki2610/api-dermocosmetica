@@ -4,8 +4,8 @@ const pacienteSchema = new mongoose.Schema({
     nombre: { type: String, required: true },
     rut: { type: Number, required: true },
     telefono: { type: Number, required: false },
-    email: { type: String, required: true, unique: true },
-    domicilio: { type: String, required: true },
+    email: { type: String, required: true },
+    domicilio: { type: String, required: false },
     fechaNacimiento: { type: Date, required: true },
     patologia: { type: String, required: true },
     sexo: { type: String, required: false },
@@ -21,3 +21,5 @@ const pacienteSchema = new mongoose.Schema({
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now }
 });
+
+module.exports = mongoose.model('Paciente', pacienteSchema);
